@@ -1,0 +1,35 @@
+version: '2'
+
+vars:
+  GOCMD: go
+  GOBUILD: "{{.GOCMD}} build"
+  BINARY_NAME: cmduptodate
+  PROJECT_ROOT: "github.com/abigpotostew/{{.BINARY_NAME}}"
+  BUILD_DIR: bin
+  BINARY_OUTPUT: "{{.BUILD_DIR}}/{{.BINARY_NAME}}"
+  GOCLEAN: "{{.GOCMD}} clean"
+
+
+
+tasks:
+  clean:
+    cmds:
+      - "{{.GOCLEAN}}"
+      - rm -rf {{.BUILD_DIR}}
+
+  build:
+    desc: Build the command
+    cmds:
+      - "{{.GOBUILD}} -o {{.BINARY_OUTPUT}}"
+
+  buildCheck:
+    desc: Build the command if it needs to be built using the command status. Try it by first running `task build` then `task buildCheck`
+    cmds:
+      - "{{.GOBUILD}} -o {{.BINARY_OUTPUT}}"
+    status:
+      - "{{.BINARY_OUTPUT}} -c {{.PROJECT_ROOT}} -g {{.BINARY_OUTPUT}}"
+
+  run:
+    deps: [build]
+    cmds:
+      - "{{.BINARY_OUTPUT}} -c {{.PROJECT_ROOT}} -g {{.BINARY_OUTPUT}}"
