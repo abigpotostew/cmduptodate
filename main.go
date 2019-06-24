@@ -144,7 +144,11 @@ func listImports(goPackage string) []string {
 func listPackageSources(goPackage, projectPrefix string) (sources []string) {
 	gopath := os.Getenv("GOPATH")
 
-	// exclude vendor and standard library packages.
+	// TODO filter out std lib using following command
+	//    go list -f '{{ printf "%v\n%v" .Standard .GoFiles }}' ghe.megaleo.com/wcp/apphub/vendor/github.com/aws/aws-sdk-go/service/s3/s3manager
+	// 	  outputs:
+	// 	   false
+	//     [batch.go bucket_region.go doc.go download.go upload.go upload_input.go]
 	// TODO include vendor source
 	if !strings.Contains(goPackage, projectPrefix) {
 		return
